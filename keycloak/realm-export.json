@@ -1,0 +1,26 @@
+
+{
+  "realm": "blog-realm",
+  "enabled": true,
+  "clients": [
+    {
+      "clientId": "blog-client",
+      "publicClient": false,
+      "secret": "mysecret",
+      "redirectUris": ["http://localhost/oauth2/callback"],
+      "directAccessGrantsEnabled": true
+    }
+  ],
+  "users": [
+    {
+      "username": "author",
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "password"
+        }
+      ]
+    }
+  ]
+}
