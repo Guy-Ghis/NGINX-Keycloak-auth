@@ -1,29 +1,49 @@
-
 {
   "realm": "blog-realm",
   "enabled": true,
   "clients": [
     {
       "clientId": "blog-client",
+      "name": "Blog OAuth Client",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "rootUrl": "http://localhost:4180/",
       "publicClient": false,
       "secret": "mysecret",
       "redirectUris": [
-        "http://localhost:4180/oauth2/callback",
-        "http://localhost/oauth2/callback"
+        "http://oauth2-proxy:4180/oauth2/callback",
+        "http://localhost:4180/oauth2/callback"
       ],
-      "directAccessGrantsEnabled": true
+      "webOrigins": [
+        "+"
+      ],
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "authorizationServicesEnabled": false,
+      "bearerOnly": false
     }
   ],
   "users": [
     {
-      "username": "author",
+      "username": "testuser",
       "enabled": true,
+      "emailVerified": true,
+      "firstName": "Test",
+      "lastName": "User",
+      "email": "test@example.com",
       "credentials": [
         {
           "type": "password",
-          "value": "password"
+          "value": "password",
+          "temporary": false
         }
       ]
     }
-  ]
+  ],
+  "roles": {
+    "realm": [],
+    "client": {}
+  }
 }
