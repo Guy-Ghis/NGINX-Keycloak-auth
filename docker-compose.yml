@@ -54,7 +54,7 @@ services:
     image: nginx:stable-alpine
     depends_on:
       oauth2-proxy:
-        condition: service_healthy
+        condition: service_started
       httpbin:
         condition: service_started
     volumes:
