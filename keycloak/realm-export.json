@@ -7,7 +7,10 @@
       "clientId": "blog-client",
       "publicClient": false,
       "secret": "mysecret",
-      "redirectUris": ["http://localhost/oauth2/callback"],
+      "redirectUris": [
+        "http://localhost:4180/oauth2/callback",
+        "http://localhost/oauth2/callback"
+      ],
       "directAccessGrantsEnabled": true
     }
   ],
