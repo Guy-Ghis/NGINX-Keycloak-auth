@@ -7,15 +7,14 @@
       "name": "Blog OAuth Client",
       "enabled": true,
       "protocol": "openid-connect",
-      "rootUrl": "http://localhost:4180/",
+      "rootUrl": "http://localhost:8081/",
       "publicClient": false,
-      "secret": "mysecret",
+      "secret": "4UXctMb6SOnuHCo6MeVDVxI8TWPRfrLguO6SmDDqCBE=",
       "redirectUris": [
-        "http://oauth2-proxy:4180/oauth2/callback",
-        "http://localhost:4180/oauth2/callback"
+        "http://localhost:8081/oauth2/callback"
       ],
       "webOrigins": [
-        "http://localhost:4180"
+        "http://localhost:8081"
       ],
       "standardFlowEnabled": true,
       "implicitFlowEnabled": false,
