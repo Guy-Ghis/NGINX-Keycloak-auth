@@ -15,14 +15,18 @@
         "http://localhost:4180/oauth2/callback"
       ],
       "webOrigins": [
-        "+"
+        "http://localhost:4180"
       ],
       "standardFlowEnabled": true,
       "implicitFlowEnabled": false,
       "directAccessGrantsEnabled": true,
-      "serviceAccountsEnabled": false,
+      "serviceAccountsEnabled": true,
       "authorizationServicesEnabled": false,
-      "bearerOnly": false
+      "bearerOnly": false,
+      "attributes": {
+        "access.token.lifespan": "3600",
+        "client_credentials.use_refresh_token": "true"
+      }
     }
   ],
   "users": [
