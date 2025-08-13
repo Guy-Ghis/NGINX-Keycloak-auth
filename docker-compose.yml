@@ -35,7 +35,7 @@ services:
     environment:
       - OAUTH2_PROXY_COOKIE_SECRET=4UXctMb6SOnuHCo6MeVDVxI8TWPRfrLguO6SmDDqCBE=
       - OAUTH2_PROXY_CLIENT_ID=blog-client
-      - OAUTH2_PROXY_CLIENT_SECRET=Ck43bm93ifpp9hYbK4c2beGisq8BhYV94POP29S4KKw=
+      - OAUTH2_PROXY_CLIENT_SECRET=4UXctMb6SOnuHCo6MeVDVxI8TWPRfrLguO6SmDDqCBE=
       - OAUTH2_PROXY_PROVIDER=oidc
       - OAUTH2_PROXY_OIDC_ISSUER_URL=http://keycloak:8080/realms/blog-realm
       - OAUTH2_PROXY_REDIRECT_URL=http://localhost:8081/oauth2/callback
