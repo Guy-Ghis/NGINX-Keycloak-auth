@@ -1,78 +1,65 @@
-version: "3.8"
+version: "3.9"
 
 services:
   keycloak:
-    container_name: keycloak
-    image: quay.io/keycloak/keycloak:latest
-    command: start-dev --import-realm
+    image: quay.io/keycloak/keycloak:25.0
+    command: ["start-dev", "--import-realm"]
     environment:
-      - KC_HOSTNAME=keycloak
-      - KC_HOSTNAME_STRICT=false
-      - KC_DB=dev-mem
-      - KC_HEALTH_ENABLED=true
-      - KC_METRICS_ENABLED=true
-      - KC_BOOTSTRAP_ADMIN_USERNAME=admin
-      - KC_BOOTSTRAP_ADMIN_PASSWORD=admin
-
-    ports:
-      - "8080:8080"
-    networks:
-      - keycloak_net
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
     volumes:
-      - ./keycloak:/opt/keycloak/data/import:Z
+      - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm.json:ro
+    ports:
+      - "8081:8080"  # Keycloak UI on http://192.168.64.17:8081
     healthcheck:
-      test: ["CMD-SHELL", "wget -q --spider http://localhost:8080/health/ready || exit 1"]
+      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/127.0.0.1/8080'"]
       interval: 10s
       timeout: 5s
-      retries: 15
-      start_period: 30s
+      retries: 30
+    networks: [stack]
 
   oauth2-proxy:
-    container_name: oauth2-proxy
-    image: quay.io/oauth2-proxy/oauth2-proxy:latest
+    image: quay.io/oauth2-proxy/oauth2-proxy:v7.6.0
+    environment:
+      OAUTH2_PROXY_PROVIDER: oidc
+      OAUTH2_PROXY_OIDC_ISSUER_URL: http://192.168.64.17:8081/realms/demo
+      OAUTH2_PROXY_CLIENT_ID: oauth2-proxy
+      OAUTH2_PROXY_CLIENT_SECRET: oauth2-proxy-secret
+      OAUTH2_PROXY_REDIRECT_URL: http://192.168.64.17:8080/oauth2/callback
+      OAUTH2_PROXY_COOKIE_SECRET: 2UNsxULfVMNDeKaitcaZH4lfDwuBjoTQ6xCWN6aQYhE=
+      OAUTH2_PROXY_COOKIE_SECURE: "false"
+      OAUTH2_PROXY_COOKIE_SAMESITE: lax
+      OAUTH2_PROXY_COOKIE_DOMAINS: 192.168.64.17
+      OAUTH2_PROXY_EMAIL_DOMAINS: "*"
+      OAUTH2_PROXY_SET_XAUTHREQUEST: "true"
+      OAUTH2_PROXY_SET_AUTHORIZATION_HEADER: "true"
+      OAUTH2_PROXY_PASS_ACCESS_TOKEN: "true"
+      OAUTH2_PROXY_SCOPE: "openid email profile"
+      OAUTH2_PROXY_SKIP_PROVIDER_BUTTON: "true"
+      OAUTH2_PROXY_UPSTREAMS: "static://200"
+      OAUTH2_PROXY_REVERSE_PROXY: "true"
+      OAUTH2_PROXY_HTTP_ADDRESS: 0.0.0.0:4180
     depends_on:
       keycloak:
         condition: service_healthy
-    environment:
-      - OAUTH2_PROXY_COOKIE_SECRET=0123456789abcdef0123456789abcdef
-      - OAUTH2_PROXY_CLIENT_ID=blog-client
-      - OAUTH2_PROXY_CLIENT_SECRET=Ck43bm93ifpp9hYbK4c2beGisq8BhYV94POP29S4KKw=
-      - OAUTH2_PROXY_PROVIDER=oidc
-      - OAUTH2_PROXY_OIDC_ISSUER_URL=http://keycloak:8080/realms/blog-realm
-      - OAUTH2_PROXY_REDIRECT_URL=http://localhost:4180/oauth2/callback
-      - OAUTH2_PROXY_EMAIL_DOMAINS=*
-      - OAUTH2_PROXY_UPSTREAMS=http://httpbin:80
-      - OAUTH2_PROXY_COOKIE_SECURE=false
-      - OAUTH2_PROXY_HTTP_ADDRESS=0.0.0.0:4180
-    ports:
-      - "4180:4180"
-    restart: unless-stopped
-    networks:
-      - keycloak_net
-
-  httpbin:
-    container_name: httpbin
-    image: kennethreitz/httpbin
-    ports:
-      - "8000:80"
-    networks:
-      - keycloak_net
+    networks: [stack]
 
   nginx:
-    container_name: nginx
-    image: nginx:stable-alpine
-    depends_on:
-      oauth2-proxy:
-        condition: service_healthy
-      httpbin:
-        condition: service_started
+    image: nginx:1.25-alpine
+    ports:
+      - "8080:8080"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-    ports:
-      - "8081:80"
-    networks:
-      - keycloak_net
+    depends_on:
+      oauth2-proxy:
+        condition: service_started
+      httpbin:
+        condition: service_started
+    networks: [stack]
+
+  httpbin:
+    image: kennethreitz/httpbin
+    networks: [stack]
 
 networks:
-  keycloak_net:
-    driver: bridge
+  stack: {}

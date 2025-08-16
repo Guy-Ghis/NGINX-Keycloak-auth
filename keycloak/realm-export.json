@@ -1,32 +1,27 @@
 {
-  "realm": "blog-realm",
+  "realm": "demo",
   "enabled": true,
+  "registrationAllowed": false,
   "clients": [
     {
-      "clientId": "blog-client",
-      "name": "Blog OAuth Client",
-      "enabled": true,
+      "clientId": "oauth2-proxy",
+      "name": "OAuth2-Proxy (NGINX demo)",
       "protocol": "openid-connect",
-      "rootUrl": "http://localhost:4180/",
       "publicClient": false,
-      "secret": "mysecret",
-      "redirectUris": [
-        "http://oauth2-proxy:4180/oauth2/callback",
-        "http://localhost:4180/oauth2/callback"
-      ],
-      "webOrigins": [
-        "http://localhost:4180"
-      ],
+      "serviceAccountsEnabled": false,
       "standardFlowEnabled": true,
       "implicitFlowEnabled": false,
       "directAccessGrantsEnabled": true,
-      "serviceAccountsEnabled": true,
-      "authorizationServicesEnabled": false,
-      "bearerOnly": false,
+      "redirectUris": [
+        "http://192.168.64.17:8080/oauth2/callback"
+      ],
+      "webOrigins": [
+        "http://192.168.64.17:8080"
+      ],
       "attributes": {
-        "access.token.lifespan": "3600",
-        "client_credentials.use_refresh_token": "true"
-      }
+        "post.logout.redirect.uris": "+"
+      },
+      "secret": "oauth2-proxy-secret"
     }
   ],
   "users": [
@@ -44,10 +39,36 @@
           "temporary": false
         }
       ]
+    },
+    {
+      "username": "newuser",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "New",
+      "lastName": "User",
+      "email": "newuser@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "password123",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "alice",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Alice",
+      "lastName": "Wonder",
+      "email": "alice@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "alicepass",
+          "temporary": false
+        }
+      ]
     }
-  ],
-  "roles": {
-    "realm": [],
-    "client": {}
-  }
+  ]
 }
