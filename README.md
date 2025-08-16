@@ -1,3 +1,7 @@
+Here’s your **README file updated to use your actual local network IP (`192.168.64.17`) instead of `localhost`**, so the instructions match your Docker Compose and Nginx setup:
+
+---
+
 # Keycloak + OAuth2 Proxy + Nginx Authentication Stack
 
 A production-ready authentication infrastructure using Keycloak as the identity provider, OAuth2 Proxy for authentication middleware, and Nginx for reverse proxy with authentication enforcement.
@@ -7,7 +11,7 @@ A production-ready authentication infrastructure using Keycloak as the identity 
 ```plaintext
 ┌─────────────┐    ┌──────────────┐    ┌─────────────┐    ┌─────────────┐
 │    Client   │───▶│     Nginx    │───▶│   OAuth2    │───▶│  Keycloak   │
-│             │    │  (Port 8081) │    │   Proxy     │    │ (Port 8080) │
+│             │    │  (Port 8080) │    │   Proxy     │    │ (Port 8081) │
 └─────────────┘    └──────────────┘    └─────────────┘    └─────────────┘
                            │                    │
                            ▼                    ▼
@@ -19,19 +23,20 @@ A production-ready authentication infrastructure using Keycloak as the identity 
 
 ## 🚀 Features
 
-- **Keycloak Identity Provider**: Centralized authentication and authorization
-- **OAuth2 Proxy**: Handles OIDC authentication flow and session management
-- **Nginx Reverse Proxy**: Routes traffic and enforces authentication via `auth_request`
-- **Health Checks**: Built-in health monitoring for all services
-- **Docker Compose**: Easy deployment and management
-- **Pre-configured Realm**: Includes a sample `blog-realm` configuration
+* **Keycloak Identity Provider**: Centralized authentication and authorization
+* **OAuth2 Proxy**: Handles OIDC authentication flow and session management
+* **Nginx Reverse Proxy**: Routes traffic and enforces authentication via `auth_request`
+* **Health Checks**: Built-in health monitoring for all services
+* **Docker Compose**: Easy deployment and management
+* **Pre-configured Realm**: Includes a sample `demo` realm configuration
 
 ## 📋 Prerequisites
 
-- Docker Engine 20.10+
-- Docker Compose 2.0+
-- At least 2GB RAM available
-- Ports 8000, 8080, 8081, and 4180 available
+* Docker Engine 20.10+
+* Docker Compose 2.0+
+* At least 2GB RAM available
+* Ports 8000, 8080, 8081, and 4180 available
+* Your machine IP (example here: `192.168.64.17`)
 
 ## 🛠️ Quick Start
 
@@ -54,33 +59,34 @@ A production-ready authentication infrastructure using Keycloak as the identity 
    ```
 
 4. **Access the services:**
-   - **Keycloak Admin Console**: http://localhost:8080 (admin/admin)
-   - **Protected Application**: http://localhost:8081
-   - **OAuth2 Proxy**: http://localhost:4180
-   - **httpbin (Backend)**: http://localhost:8000
+
+   * **Keycloak Admin Console**: [http://192.168.64.17:8081](http://192.168.64.17:8081) (admin/admin)
+   * **Protected Application**: [http://192.168.64.17:8080](http://192.168.64.17:8080)
+   * **OAuth2 Proxy**: [http://192.168.64.17:4180](http://192.168.64.17:4180)
+   * **httpbin (Backend)**: [http://192.168.64.17:8000](http://192.168.64.17:8000)
 
 ## 🔧 Configuration
 
 ### Keycloak
 
-- **Port**: 8080
-- **Admin**: admin/admin
-- **Database**: In-memory H2 (dev mode)
-- **Realm**: Automatically imports `blog-realm` from `keycloak/realm-export.json`
+* **Port**: 8081
+* **Admin**: admin/admin
+* **Database**: In-memory H2 (dev mode)
+* **Realm**: Automatically imports `demo` from `keycloak/realm-export.json`
 
 ### OAuth2 Proxy
 
-- **Port**: 4180
-- **Provider**: OIDC (Keycloak)
-- **Client**: `blog-client`
-- **Redirect**: http://localhost:8081/oauth2/callback
+* **Port**: 4180
+* **Provider**: OIDC (Keycloak)
+* **Client**: `oauth2-proxy`
+* **Redirect**: [http://192.168.64.17:8080/oauth2/callback](http://192.168.64.17:8080/oauth2/callback)
 
 ### Nginx
 
-- **Port**: 8081
-- **Authentication**: Enforced via OAuth2 Proxy
-- **Backend**: Proxies to httpbin service
-- **Health Check**: Available at `/health`
+* **Port**: 8080
+* **Authentication**: Enforced via OAuth2 Proxy
+* **Backend**: Proxies to httpbin service
+* **Health Check**: Available at `/health`
 
 ## 🔐 Authentication Flow
 
@@ -115,23 +121,23 @@ docker compose ps
 docker compose logs [service-name]
 
 # Test endpoints
-curl http://localhost:8081/health
-curl http://localhost:8000/anything
+curl http://192.168.64.17:8080/health
+curl http://192.168.64.17:8000/anything
 ```
 
 ### Authentication Test
 
-1. Access http://localhost:8081
+1. Access [http://192.168.64.17:8080](http://192.168.64.17:8080)
 2. You'll be redirected to Keycloak login
 3. Use credentials from your realm
 4. After authentication, you'll access the protected resource
 
 ## 🔒 Security Considerations
 
-- **Development Mode**: This setup uses Keycloak dev mode - not for production
-- **HTTP Only**: Configured for local development (no HTTPS)
-- **Default Credentials**: Change admin passwords in production
-- **Cookie Security**: OAuth2 Proxy cookies set to non-secure for local dev
+* **Development Mode**: This setup uses Keycloak dev mode - not for production
+* **HTTP Only**: Configured for local development (no HTTPS)
+* **Default Credentials**: Change admin passwords in production
+* **Cookie Security**: OAuth2 Proxy cookies set to non-secure for local dev
 
 ## 🚀 Production Deployment
 
@@ -160,20 +166,20 @@ docker compose restart
 
 **Authentication failures:**
 
-- Verify Keycloak realm is properly configured
-- Check OAuth2 Proxy environment variables
-- Ensure network connectivity between services
+* Verify Keycloak realm is properly configured
+* Check OAuth2 Proxy environment variables
+* Ensure network connectivity between services
 
 **Port conflicts:**
 
-- Verify ports 8000, 8080, 8081, and 4180 are available
-- Check for existing services using these ports
+* Verify ports 8000, 8080, 8081, and 4180 are available
+* Check for existing services using these ports
 
 ## 📚 Additional Resources
 
-- [Keycloak Documentation](https://www.keycloak.org/documentation)
-- [OAuth2 Proxy Documentation](https://oauth2-proxy.github.io/oauth2-proxy/)
-- [Nginx auth_request Module](http://nginx.org/en/docs/http/ngx_http_auth_request_module.html)
+* [Keycloak Documentation](https://www.keycloak.org/documentation)
+* [OAuth2 Proxy Documentation](https://oauth2-proxy.github.io/oauth2-proxy/)
+* [Nginx auth\_request Module](http://nginx.org/en/docs/http/ngx_http_auth_request_module.html)
 
 ## 📄 License
 
@@ -182,3 +188,9 @@ This project is provided as-is for educational and development purposes.
 ---
 
 **Note**: This is a development setup. For production use, ensure proper security hardening, HTTPS configuration, and database persistence.
+
+---
+
+If you want, I can also **update the diagrams in the README** to reflect the IP addresses instead of ports labeled as localhost, so it’s fully consistent visually.
+
+Do you want me to do that?
